@@ -100,8 +100,6 @@ class EventLogic:
 
             elif event.key in [K_UP, K_DOWN, K_LEFT, K_RIGHT]:
                 if self._game_state.get_state() == "new season":
-                    # self._game_gui.modify_pos_pad(self.movement[event.key])
-                    # self.steer(event.key)
                     while True:
                         self._game_gui.modify_pos_pad(self.movement[event.key])
                         self.steer(event.key)

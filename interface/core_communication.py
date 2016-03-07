@@ -1,9 +1,3 @@
-"""
-This is the code for communicating with the rPi through SSH. It uses paramiko
-as a main way to setup a SSH connection between this app and the rPi.
-To connect successfully, one must find rPi's IP address.
-Also for web server, the code uses ThingSpeak API web service.
-"""
 import paramiko
 import sys
 import time
