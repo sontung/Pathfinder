@@ -1,7 +1,13 @@
 import pygame
 import sys
 import core_communication
+import socket
+from multiprocessing import Process
 from pygame.locals import *
+
+
+def start_server():
+    execfile("server.py")
 
 
 class EventLogic:
@@ -9,6 +15,7 @@ class EventLogic:
         self._game_state = _game_state
         self._game_gui = _game_gui
         self.ssh_talk = core_communication.SSHCommunication()
+        self.bluetooth_talk = core_communication.BluetoothCommunication()
         self.movement = {
             K_UP: 8,
             K_DOWN: 2,
@@ -18,17 +25,22 @@ class EventLogic:
 
     def steer(self, direction):
         if direction == K_UP:
-            self.ssh_talk.command("cd Autonomous-Car/raspberry; sudo python motor_control.py 250 250")
+            self.bluetooth_talk.command("8")
         elif direction == K_RIGHT:
-            self.ssh_talk.command("cd Autonomous-Car/raspberry; sudo python motor_control.py 250, -250")
+            self.bluetooth_talk.command("4")
         elif direction == K_LEFT:
-            self.ssh_talk.command("cd Autonomous-Car/raspberry; sudo python motor_control.py -250, 250")
+            self.bluetooth_talk.command("6")
         elif direction == K_DOWN:
-            self.ssh_talk.command("cd Autonomous-Car/raspberry; sudo python motor_control.py -250, -250")
+            self.bluetooth_talk.command("2")
 
     def quit(self):
         pygame.quit()
         sys.exit()
+
+    def get_ip_address(self):
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        return s.getsockname()[0]
 
     def event_handler(self):
 
@@ -38,6 +50,10 @@ class EventLogic:
                 if self._game_gui.new.get_rect().collidepoint(event.pos):
                     self._game_state.set_state("new season")
                     self.ssh_talk.connect()
+                    self.ssh_talk.command("sudo python client1.py %s" % self.get_ip_address())
+                    self.bluetooth_talk.connect()
+                    serverProcess = Process(target=start_server)
+                    serverProcess.start()
                 elif self._game_gui.help.get_rect().collidepoint(event.pos):
                     self._game_state.set_state("help")
                 elif self._game_gui.author.get_rect().collidepoint(event.pos):
@@ -49,6 +65,7 @@ class EventLogic:
             elif self._game_state.get_state() == "new season":
                 if self._game_gui.back.get_rect().collidepoint(event.pos):
                     self.ssh_talk.disconnect()
+                    self.bluetooth_talk.disconnect()
                     self._game_state.set_state("welcome")
             elif self._game_state.get_state() == "setting":
                 if self._game_gui.back.get_rect().collidepoint(event.pos):
@@ -77,27 +94,29 @@ class EventLogic:
         elif event.type == pygame.QUIT:
             self.quit()
 
-        elif event.type == KEYUP:
-            if self._game_state.get_state() == "new season":
-                self.ssh_talk.command('0')
-                self._game_gui.modify_pos_pad(0)
-
         elif event.type == KEYDOWN:
             if event.key == K_ESCAPE:
                 self.quit()
 
             elif event.key in [K_UP, K_DOWN, K_LEFT, K_RIGHT]:
                 if self._game_state.get_state() == "new season":
-                    self._game_gui.modify_pos_pad(self.movement[event.key])
-                    self.steer(event.key)
+                    # self._game_gui.modify_pos_pad(self.movement[event.key])
+                    # self.steer(event.key)
+                    while True:
+                        self._game_gui.modify_pos_pad(self.movement[event.key])
+                        self.steer(event.key)
+                        self.event_handler()
+                        if pygame.key.get_pressed()[event.key] == 0:
+                            break
 
             elif event.key in range(48, 58) or event.key in range(256, 266):
-                if self._game_gui.typing_tag:
-                    if event.key < 100:
-                        char = str(event.key-48)
-                    elif event.key < 300:
-                        char = str(event.key-256)
-                    self._game_gui.prompt.take_char(char)
+                if self._game_state.get_state() == "setting":
+                    if self._game_gui.typing_tag:
+                        if event.key < 100:
+                            char = str(event.key-48)
+                        elif event.key < 300:
+                            char = str(event.key-256)
+                        self._game_gui.prompt.take_char(char)
 
-                elif event.key == K_BACKSPACE:
-                    self._game_gui.prompt.take_char("del")
+                    elif event.key == K_BACKSPACE:
+                        self._game_gui.prompt.take_char("del")

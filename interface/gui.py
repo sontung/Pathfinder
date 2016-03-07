@@ -76,7 +76,7 @@ class GUI:
         """
         self.display_surface.fill(self.bg_color)
         if state == "welcome":
-            start_point = 100
+            start_point = 80
             self.setting = Button('Settings', self.text_color, self.tile_color,
                                   (self.window_width/2, start_point+60), self)
             self.new = Button('New Season', self.text_color, self.tile_color,

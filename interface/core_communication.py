@@ -8,11 +8,12 @@ import paramiko
 import sys
 import time
 import select
+import serial
 
 
 class SSHCommunication:
     def __init__(self):
-        self.host = "192.168.1.104"
+        self.host = "192.168.0.108"
         self.user = "pi"
         self.password = "raspberry"
         self.ssh = None
@@ -81,3 +82,39 @@ class SSHCommunication:
                     # Print data from stdout
                     print stdout.channel.recv(1024),
             return stdout
+
+
+class BluetoothCommunication:
+    def __init__(self):
+        self.serial_port = 4  # Bluetooth serial port
+
+    def specify_port(self, port):
+        """
+        Specify the COM bluetooth port.
+        :param port:
+        :return:
+        """
+        self.serial_port = port
+
+    def connect(self):
+        """
+        Connect to the specified port.
+        :return:
+        """
+        print self.serial_port
+        self.connection = serial.Serial(self.serial_port)
+
+    def disconnect(self):
+        """
+        Disconnect the port.
+        :return:
+        """
+        self.connection.close()
+
+    def command(self, val):
+        """
+        Send command to bluetooth module.
+        :param val:
+        :return:
+        """
+        self.connection.write(val)
