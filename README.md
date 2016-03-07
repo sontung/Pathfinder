@@ -1,9 +1,6 @@
 # Pathfinder
-<img align="left" src="https://raw.githubusercontent.com/sontung/pathfinder/master/IMG_1131.JPG" hspace="15" width="70px" style="float: left">
-An remote controlled robot that navigates around and transmits video through its camera.
-
-## How it works
-The project consists of three main hardwares: Raspberry Pi, Arduino Uno and a laptop running Windows. RPi controls the camera and transmits images back to the laptop by local network (SSH communication). Arduino controls the motors and lets the robot move as commanded by laptop through bluetooth. The laptop sends commands to RPi and Arduino and receives and streams video live. 
+<img align="left" src="https://raw.githubusercontent.com/sontung/pathfinder/master/IMG_1131.JPG" hspace="15" width="150px" style="float: left">
+An remote controlled robot that navigates around and transmits video through its camera. The project consists of three main hardwares: Raspberry Pi, Arduino Uno and a laptop running Windows. RPi controls the camera and transmits images back to the laptop by local network (SSH communication). Arduino controls the motors and lets the robot move as commanded by laptop through bluetooth. The laptop sends commands to RPi and Arduino and receives and streams video live. 
 
 ## Libraries used
 * [pygame](http://www.pygame.org/) - GUI
