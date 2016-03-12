@@ -18,4 +18,4 @@ An remote controlled robot that navigates around and transmits video through its
 * HC-06 bluetooth module
 
 ## Demo video
-<a href="https://youtu.be/gYHp8NsBYWQ" target="_blank"><img src="http://img.youtube.com/vi/gYHp8NsBYWQ/3.jpg" alt="Demo video" width="240" height="180" border="10" /></a>
+<a href="https://youtu.be/gYHp8NsBYWQ" target="_blank"><img src="http://img.youtube.com/vi/gYHp8NsBYWQ/0.jpg" alt="Demo video" width="240" height="180" border="10" /></a>
